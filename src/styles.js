@@ -51,7 +51,6 @@ export const PlayerMoveOutput = styled.div`
 export const AiMoveOutput = styled.div`
   grid-area: ai-move;
 `
-
 export const ResultOutput = styled.div`
   grid-area: result;
   font-size: 30px;

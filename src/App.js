@@ -3,43 +3,39 @@ import React, { useState, useCallback } from 'react';
 import { Button, Container, GameWindow, Header, GameScreen, GameOutput, PlayerMoveOutput, AiMoveOutput, ResultOutput } from './styles';
 import { GiRock, GiPaper, GiScissors } from 'react-icons/gi';
 
+const moveDict = {
+  0: ['Rock', <GiRock size={70} />],
+  1: ['Paper', <GiPaper size={70} />],
+  2: ['Scissors', <GiScissors size={70} />],
+}
+
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [result, setResult] = useState('');
-  const [playerMove, setPlayerMove] = useState(0);
   const [aiMove, setAiMove] = useState(0);
+  const [playerMove, setPlayerMove] = useState(0);
+  const [result, setResult] = useState('');
 
-  const moveDict = {
-    0: ['Rock', <GiRock size={70} />],
-    1: ['Paper', <GiPaper size={70} />],
-    2: ['Scissors', <GiScissors size={70} />],
-  };
 
-  const handleMoveCallback = useCallback(async (playerMove) => {
-    await setAiMove(Math.floor(Math.random() * 3));
+  const handleMoveCallback = useCallback((playerChoice) => {
+
+    setPlayerMove(playerChoice);
+
+    const randomChoice = Math.floor(Math.random() * 3);
+    setAiMove(randomChoice);
+
+    let moveComparison = '';
+
+    if (playerChoice === randomChoice) {
+      moveComparison = 'Draw';
+    } else if (playerChoice === (randomChoice + 1) || playerChoice === (randomChoice - 2)) {
+      moveComparison = 'Win'
+    } else {
+      moveComparison = 'Lost'
+    }
+
+    setResult(moveComparison);
     setGameStarted(true);
-    setPlayerMove(playerMove);
-    console.log(playerMove, aiMove)
-
-    if (playerMove === aiMove) {
-      console.log(result)
-      return setResult('Draw')
-      console.log(result)
-    }
-
-    else if (playerMove === (aiMove + 1) || playerMove === (aiMove - 2)) {
-      console.log(result)
-      return setResult('Win')
-      console.log(result)
-    }
-
-    else {
-      console.log(result)
-      return setResult('Lost')
-      console.log(result)
-    }
-  }, [gameStarted, result, playerMove, aiMove])
-  console.log(result)
+  }, [playerMove, aiMove, result, gameStarted])
 
   return (
     <div>
@@ -51,8 +47,7 @@ function App() {
           <hr color={`#FFFFAA`} />
           <GameScreen>
             {!gameStarted && <span>Clique em um dos botões abaixo para iniciar o jogo.</span>}
-            {
-              gameStarted &&
+            {gameStarted &&
               <GameOutput>
                 <PlayerMoveOutput>
                   <span>{moveDict[playerMove][1]}</span>
@@ -75,10 +70,10 @@ function App() {
           <Button onClick={() => handleMoveCallback(1)}>Paper</Button>
           <Button onClick={() => handleMoveCallback(2)}>Scissors</Button>
         </GameWindow>
-        <div>Icons made by <a href="https://www.flaticon.com/authors/darius-dan" title="Darius Dan">Darius Dan</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
       </Container>
     </div >
   );
 }
+
 
 export default App;
