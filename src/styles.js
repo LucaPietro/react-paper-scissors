@@ -31,6 +31,10 @@ export const GameScreen = styled.div`
   border: 1px solid rgba(0,0,0,0.5);
   border-radius: 10px;
   color: rgba(0,0,0,0.5);
+
+  span {
+    margin: auto;
+  };
 `
 
 export const GameOutput = styled.div`
@@ -43,6 +47,15 @@ export const GameOutput = styled.div`
   grid-template-areas: 
     "player-move ai-move"
     "result result";
+
+  span {
+    animation: flash 0.5s;
+
+    @keyframes flash {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  }
 `
 
 export const PlayerMoveOutput = styled.div`
@@ -53,6 +66,9 @@ export const AiMoveOutput = styled.div`
 `
 export const ResultOutput = styled.div`
   grid-area: result;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
   font-size: 30px;
   margin-bottom: 20px;
 `

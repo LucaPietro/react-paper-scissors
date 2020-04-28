@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 
+import './styles.css'
 import { Button, Container, GameWindow, Header, GameScreen, GameOutput, PlayerMoveOutput, AiMoveOutput, ResultOutput } from './styles';
+
 import { GiRock, GiPaper, GiScissors } from 'react-icons/gi';
 
 const moveDict = {
@@ -14,7 +16,15 @@ function App() {
   const [aiMove, setAiMove] = useState(0);
   const [playerMove, setPlayerMove] = useState(0);
   const [result, setResult] = useState('');
+  const [score, setScore] = useState(0);
+  const [health, setHealth] = useState(3);
 
+  // const handleGameOver = () => {
+  //   setScore(0);
+  //   setHealth(3);
+  //   setGameStarted(false);
+  //   return alert(`Score: ${score}`)
+  // }
 
   const handleMoveCallback = useCallback((playerChoice) => {
 
@@ -24,18 +34,33 @@ function App() {
     setAiMove(randomChoice);
 
     let moveComparison = '';
+    let scoreGained = 0;
+    let healthLost = 0;
 
     if (playerChoice === randomChoice) {
       moveComparison = 'Draw';
+
     } else if (playerChoice === (randomChoice + 1) || playerChoice === (randomChoice - 2)) {
       moveComparison = 'Win'
+      scoreGained = 100
+
     } else {
       moveComparison = 'Lost'
+      healthLost = 1
+
+      if (health === 1) {
+        setScore(0);
+        setHealth(3);
+        setGameStarted(false);
+        return alert(`Score: ${score}`)
+      }
     }
 
     setResult(moveComparison);
+    setScore(score + scoreGained);
+    setHealth(health - healthLost);
     setGameStarted(true);
-  }, [playerMove, aiMove, result, gameStarted])
+  }, [playerMove, aiMove, result, gameStarted, score, health])
 
   return (
     <div>
@@ -46,9 +71,10 @@ function App() {
           </Header>
           <hr color={`#FFFFAA`} />
           <GameScreen>
-            {!gameStarted && <span>Clique em um dos botões abaixo para iniciar o jogo.</span>}
+            {!gameStarted && <span>Click one of the buttons below to start the game.</span>}
             {gameStarted &&
               <GameOutput>
+
                 <PlayerMoveOutput>
                   <span>{moveDict[playerMove][1]}</span>
                   <br />
@@ -57,11 +83,14 @@ function App() {
                 <AiMoveOutput>
                   <span>{moveDict[aiMove][1]}</span>
                   <br />
-                  <span>AI Move: {moveDict[aiMove][0]}</span>
+                  <span>Enemy Move: {moveDict[aiMove][0]}</span>
                 </AiMoveOutput>
                 <ResultOutput>
                   <span>Result: {result}</span>
+                  <span>Score: {score}</span>
+                  <span>Health: {health}</span>
                 </ResultOutput>
+
               </GameOutput>
             }
           </GameScreen>
